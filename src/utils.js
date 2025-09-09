@@ -142,6 +142,11 @@ export function selectAllCoordinateInputs(document) {
   return coords;
 }
 
+export function formatTileCoords(tileCoords) {
+  return tileCoords[0].toString().padStart(4, '0') + ',' + 
+         tileCoords[1].toString().padStart(4, '0');
+}
+
 /** The color palette used by wplace.live
  * @since 0.78.0
  * @examples

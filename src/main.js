@@ -651,6 +651,9 @@ function buildOverlayMain() {
     const entries = Object.entries(t.colorPalette)
       .sort((a,b) => b[1].count - a[1].count); // sort by frequency desc
 
+    const totalColorsProgress = templateManager.tileProgress
+      .computeTotalColorsProgress();
+
     for (const [rgb, meta] of entries) {
       let row = document.createElement('div');
       row.style.display = 'flex';
@@ -665,7 +668,7 @@ function buildOverlayMain() {
 
       let label = document.createElement('span');
       label.style.fontSize = '12px';
-      let labelText = `${meta.count.toLocaleString()}`;
+      let labelText = `${totalColorsProgress.paintedPixelColorCounts[rgb] || 0} / ${meta.count.toLocaleString()}`;
 
       // Special handling for "other" and "transparent"
       if (rgb === 'other') {
