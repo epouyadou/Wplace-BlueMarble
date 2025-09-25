@@ -2,7 +2,7 @@ import Template from "./Template";
 import { TileProgress, TileProgressManager } from "./TileProgress";
 import Pixel from "./Pixel";
 import TemplateArray from "./TemplateArray";
-import { base64ToUint8, formatTileCoords, numberToEncoded } from "./utils";
+import { base64ToUint8, consoleLog, formatTileCoords, numberToEncoded } from "./utils";
 
 /** Manages the template system.
  * This class handles all external requests for template modification, creation, and analysis.
@@ -136,7 +136,7 @@ export default class TemplateManager {
     // Creates a new template instance
     const template = new Template({
       displayName: name,
-      sortID: 0, // Object.keys(this.templatesJSON.templates).length || 0, // Uncomment this to enable multiple templates (1/2)
+      sortID: Object.keys(this.templatesJSON.templates).length || 0,
       authorID: numberToEncoded(this.userID || 0, this.encodingBase),
       file: blob,
       coords: coords
@@ -230,6 +230,7 @@ export default class TemplateManager {
     console.log(`Searching for templates in tile: "${tileCoords}"`);
 
     const templatesArrayCopy = new TemplateArray(this.templatesArray);
+
     // Sorts the array of Template class instances. 0 = first = lowest draw priority
     templatesArrayCopy.sortByPriority();
     // Early exit if none of the active templates touch this tile
@@ -537,7 +538,7 @@ export default class TemplateManager {
     console.log(json);
 
     // If the passed in JSON is a Blue Marble template object...
-    if (json?.whoami == 'BlueMarble') {
+    if (json?.whoami == 'BlueMarbleAE') {
       this.#parseBlueMarble(json); // ...parse the template object as Blue Marble
     }
   }
