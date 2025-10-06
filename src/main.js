@@ -6,7 +6,7 @@ import Overlay from './Overlay.js';
 import Observers from './observers.js';
 import ApiManager from './apiManager.js';
 import TemplateManager from './templateManager.js';
-import { consoleLog, consoleWarn, selectAllCoordinateInputs } from './utils.js';
+import { consoleLog, consoleWarn, isPremiumColor, selectAllCoordinateInputs } from './utils.js';
 
 const name = GM_info.script.name.toString(); // Name of userscript
 const version = GM_info.script.version.toString(); // Version of userscript
@@ -278,7 +278,12 @@ function buildOverlayMain() {
   overlayMain.addDiv({'id': 'bm-overlay', 'style': 'top: 10px; right: 75px;'})
     .addDiv({'id': 'bm-contain-header'})
       .addDiv({'id': 'bm-bar-drag'}).buildElement()
-      .addImg({'alt': 'Blue Marble Icon - Click to minimize/maximize', 'src': 'https://raw.githubusercontent.com/SwingTheVine/Wplace-BlueMarble/main/dist/assets/Favicon.png', 'style': 'cursor: pointer;'}, 
+      .addImg(
+        {
+          'alt': 'Blue Marble Icon - Click to minimize/maximize', 
+          'src': 'https://raw.githubusercontent.com/SwingTheVine/Wplace-BlueMarble/main/dist/assets/Favicon.png', 
+          'style': 'cursor: pointer;'
+        }, 
         (instance, img) => {
           /** Click event handler for overlay minimize/maximize functionality.
            * 
@@ -568,6 +573,32 @@ function buildOverlayMain() {
               Object.values(t.colorPalette).forEach(v => v.enabled = false);
               buildColorFilterList();
               instance.handleDisplayStatus('Disabled all colors');
+            };
+          }).buildElement()
+        .buildElement()
+        .addDiv({'style': 'display: flex; margin-bottom: 6px;'})
+          .addButton({'id': 'bm-button-enable-only-free-colors', 'textContent': 'Enable Only Free Colors'}, (instance, button) => {
+            button.onclick = () => {
+              const t = templateManager.templatesArray[0];
+              if (!t?.colorPalette) { return; }
+              consoleLog(t.colorPalette);
+              Object.keys(t.colorPalette).forEach(colorStr => isPremiumColor(colorStr) ? (t.colorPalette[colorStr].enabled = false) : (t.colorPalette[colorStr].enabled = true));
+              consoleLog(t.colorPalette);
+              buildColorFilterList();
+              instance.handleDisplayStatus('Enabled free colors');
+            };
+          }).buildElement()
+        .buildElement()
+        .addDiv({'style': 'display: flex; margin-bottom: 6px;'})
+          .addButton({'id': 'bm-button-enable-only-premium-colors', 'textContent': 'Enable Only Premium Colors'}, (instance, button) => {
+            button.onclick = () => {
+              const t = templateManager.templatesArray[0];
+              if (!t?.colorPalette) { return; }
+              consoleLog(t.colorPalette);
+              Object.keys(t.colorPalette).forEach(colorStr => isPremiumColor(colorStr) ? (t.colorPalette[colorStr].enabled = true) : (t.colorPalette[colorStr].enabled = false));
+              consoleLog(t.colorPalette);
+              buildColorFilterList();
+              instance.handleDisplayStatus('Enabled premium colors');
             };
           }).buildElement()
         .buildElement()

@@ -147,6 +147,27 @@ export function formatTileCoords(tileCoords) {
          tileCoords[1].toString().padStart(4, '0');
 }
 
+export function isPremiumColor(colorStr) {
+  const colorChannelArray = strToColorChannelArray(colorStr);
+  if (!colorChannelArray) { return false; }
+  const color = colorpalette.find(c => 
+    c.rgb[0] === colorChannelArray[0] &&
+    c.rgb[1] === colorChannelArray[1] &&
+    c.rgb[2] === colorChannelArray[2]
+  );
+  return color ? color.premium : false;
+}
+
+export function strToColorChannelArray(colorStr) {
+  colorParts = colorStr.split(',');
+  if (colorParts.length != 3) { return null; }
+  const r = parseInt(colorParts[0]);
+  const g = parseInt(colorParts[1]);
+  const b = parseInt(colorParts[2]);
+  if (isNaN(r) || isNaN(g) || isNaN(b)) { return null; }
+  return [r, g, b];
+}
+
 /** The color palette used by wplace.live
  * @since 0.78.0
  * @examples
